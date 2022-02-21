@@ -2,9 +2,11 @@ name: run_eslint
 on: [push]
 jobs:
   my-job:
-    - name: npm install
-      run: 
-        make install
-    - name: Run Linter
-      run: 
-        make lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: npm install
+        run: 
+          make install
+      - name: Run Linter
+        run: 
+          make lint
