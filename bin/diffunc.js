@@ -1,12 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-const diffunc = (filepath1, filepath2) => {
+const sortFiles = (filepath1, filepath2) => {
   const afterPath1 = path.isAbsolute(filepath1) ? filepath1 : path.resolve('__fixture__', filepath1);
   const afterPath2 = path.isAbsolute(filepath2) ? filepath2 : path.resolve('__fixture__', filepath2);
 
-  const fileRead1 = fs.readFileSync(afterPath1, { encoding: 'utf8' });
-  const fileRead2 = fs.readFileSync(afterPath2, { encoding: 'utf8' });
+  const fileRead1 = fs.readFileSync(afterPath1, 'utf8');
+  const fileRead2 = fs.readFileSync(afterPath2, 'utf8');
 
   const parsedFile1 = [];
   JSON.parse(fileRead1, (key, value) => parsedFile1.push(`${key}---${value}`));
@@ -18,7 +18,13 @@ const diffunc = (filepath1, filepath2) => {
 
   parseFile1.sort();
   parseFile2.sort();
+  return [parseFile1, parseFile2];
+};
 
+const diffunc = (filepath1, filepath2) => {
+  const now = sortFiles(filepath1, filepath2);
+  const parseFile1 = now[0];
+  const parseFile2 = now[1];
   console.log('{');
 
   const onlytest1 = parseFile1.map((array) => {
