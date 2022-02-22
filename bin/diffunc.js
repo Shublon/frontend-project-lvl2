@@ -1,9 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
 
 const sortFiles = (filepath1, filepath2) => {
-  const afterPath1 = path.isAbsolute(filepath1) ? filepath1 : path.resolve('__fixture__', filepath1);
-  const afterPath2 = path.isAbsolute(filepath2) ? filepath2 : path.resolve('__fixture__', filepath2);
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  const afterPath1 = path.isAbsolute(filepath1) ? filepath1 : path.join(__dirname, '..', '__fixture__', filepath1);
+  const afterPath2 = path.isAbsolute(filepath2) ? filepath2 : path.join(__dirname, '..', '__fixture__', filepath2);
 
   const fileRead1 = fs.readFileSync(afterPath1, 'utf8');
   const fileRead2 = fs.readFileSync(afterPath2, 'utf8');
@@ -25,7 +29,6 @@ const diffunc = (filepath1, filepath2) => {
   const now = sortFiles(filepath1, filepath2);
   const parseFile1 = now[0];
   const parseFile2 = now[1];
-  console.log('{');
 
   const onlytest1 = parseFile1.map((array) => {
     const arr = array.split('---');
@@ -34,8 +37,6 @@ const diffunc = (filepath1, filepath2) => {
     }
     return `  - ${arr[0]}: ${arr[1]}\n`;
   });
-  onlytest1[onlytest1.length - 1] = onlytest1[onlytest1.length - 1].slice(0, -1);
-  console.log(onlytest1.join(''));
 
   const onlytest2 = parseFile2.map((array) => {
     const arr = array.split('---');
@@ -44,9 +45,11 @@ const diffunc = (filepath1, filepath2) => {
     }
     return null;
   });
-  onlytest2[onlytest2.length - 1] = onlytest2[onlytest2.length - 1].slice(0, -1);
-  console.log(onlytest2.join(''));
-  console.log('}');
+
+  const demoResult = ['{\n', onlytest1, onlytest2, '}'];
+  const result = demoResult.flat();
+  console.log(result.join(''));
+  return result.join('');
 };
 
 export default diffunc;
