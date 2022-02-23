@@ -48,7 +48,6 @@ const diffunc = (filepath1, filepath2) => {
 
   const demoResult = ['{\n', onlytest1, onlytest2, '}'];
   const result = demoResult.flat();
-  console.log(result.join(''));
   return result.join('');
 };
 
