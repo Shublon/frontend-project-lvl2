@@ -1,47 +1,25 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
-
-const sortFiles = (filepath1, filepath2) => {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-
-  const afterPath1 = path.isAbsolute(filepath1) ? filepath1 : path.join(__dirname, '..', '__fixture__', filepath1);
-  const afterPath2 = path.isAbsolute(filepath2) ? filepath2 : path.join(__dirname, '..', '__fixture__', filepath2);
-
-  const fileRead1 = fs.readFileSync(afterPath1, 'utf8');
-  const fileRead2 = fs.readFileSync(afterPath2, 'utf8');
-
-  const parsedFile1 = [];
-  JSON.parse(fileRead1, (key, value) => parsedFile1.push(`${key}---${value}`));
-  const parseFile1 = parsedFile1.slice(0, -1);
-
-  const parsedFile2 = [];
-  JSON.parse(fileRead2, (key, value) => parsedFile2.push(`${key}---${value}`));
-  const parseFile2 = parsedFile2.slice(0, -1);
-
-  parseFile1.sort();
-  parseFile2.sort();
-  return [parseFile1, parseFile2];
-};
+import sortFiles from './parsers.js';
 
 const diffunc = (filepath1, filepath2) => {
   const now = sortFiles(filepath1, filepath2);
-  const parseFile1 = now[0];
-  const parseFile2 = now[1];
+  const pare1demo = Object.entries(now[0]);
+  const pare2demo = Object.entries(now[1]);
 
-  const onlytest1 = parseFile1.map((array) => {
-    const arr = array.split('---');
-    if (parseFile2.includes(array)) {
-      return `    ${arr[0]}: ${arr[1]}\n`;
+  const pare1 = pare1demo.map((arr) => `${arr[0]}: ${arr[1]}\n`);
+  const pare2 = pare2demo.map((arr) => `${arr[0]}: ${arr[1]}\n`);
+  pare1.sort();
+  pare2.sort();
+
+  const onlytest1 = pare1.map((str) => {
+    if (pare2.includes(str)) {
+      return `    ${str}`;
     }
-    return `  - ${arr[0]}: ${arr[1]}\n`;
+    return `  - ${str}`;
   });
 
-  const onlytest2 = parseFile2.map((array) => {
-    const arr = array.split('---');
-    if (!parseFile1.includes(array)) {
-      return `  + ${arr[0]}: ${arr[1]}\n`;
+  const onlytest2 = pare2.map((str) => {
+    if (!pare1.includes(str)) {
+      return `  + ${str}`;
     }
     return null;
   });

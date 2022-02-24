@@ -15,4 +15,7 @@ const fileTest = (file) => {
 
 test('diffunc', () => {
   expect(diffunc('file1.json', 'file2.json')).toEqual(fileTest('expectFiles.txt'));
+  // expect(diffunc('file1.yml', 'file2.json')).toEqual(fileTest('expectFiles.txt'));
+  // expect(diffunc('file1.json', 'file2.yaml')).toEqual(fileTest('expectFiles.txt'));
+  // expect(diffunc('file1.yml', 'file2.yaml')).toEqual(fileTest('expectFiles.txt'));
 });
